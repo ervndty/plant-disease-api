@@ -23,14 +23,12 @@ async def predict(file: UploadFile = File(...)):
         image_bytes = await file.read()
         logger.info(f"Received file: {file.filename}")
         pred, confidence = inference_pipeline(image_bytes)
-
-        # pastikan tipe datanya normal
+        
         if hasattr(pred, "item"):
             pred = pred.item()
         if hasattr(confidence, "item"):
             confidence = confidence.item()
 
-        # 🧩 ubah index ke nama label
         disease_name = LABELS[pred] if isinstance(pred, int) and pred < len(LABELS) else str(pred)
 
         return JSONResponse({
